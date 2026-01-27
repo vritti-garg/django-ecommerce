@@ -47,7 +47,7 @@
             {% endif %}
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'view_cart' %}">
-                    Cart <span class="badge bg-secondary">0</span>
+                    Cart <span class="badge bg-secondary">{{ cart_count }}</span>
                 </a>
             </li>
           </ul>
@@ -58,8 +58,9 @@
     <div class="container mt-4 mb-4">
         {% if messages %}
             {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
                     {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             {% endfor %}
         {% endif %}
@@ -69,5 +70,20 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    {% if messages %}
+        {% for message in messages %}
+            <script>
+                Swal.fire({
+                    title: "{{ message.tags|title }}!",  // 'Success' or 'Error'
+                    text: "{{ message }}",               // "Product is Out of Stock"
+                    icon: "{{ message.tags }}",          // Checkmark or X icon
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#3085d6',
+                });
+            </script>
+        {% endfor %}
+    {% endif %}
   </body>
 </html>

@@ -1,31 +1,86 @@
-<table class="table align-middle">
-    <thead>
-        <tr>
-            <th>Product</th>
-            <th>Price</th>
-            <th>Quantity</th>
-            <th>Total</th>
-            <th>Action</th> </tr>
-    </thead>
-    <tbody>
-        {% for item in items %}
-        <tr>
-            <td>
-                {% if item.product.image %}
-                <img src="{{ item.product.image.url }}" style="height: 50px; width: 50px; object-fit: cover; margin-right: 10px;">
-                {% endif %}
-                {{ item.product.name }}
-            </td>
-            <td>₹ {{ item.product.price }}</td>
-            <td>{{ item.quantity }}</td>
-            <td>₹ {{ item.total_price }}</td>
-            <td>
-                <a href="{% url 'remove_from_cart' item.id %}" class="btn btn-danger btn-sm">
-                    Remove
-                </a>
-                <a href="{% url 'checkout' %}" class="btn btn-success btn-lg">Proceed to Checkout</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h3 class="mb-4 fw-bold">Shopping Cart ({{ items|length }} items)</h3>
+
+    {% if items %}
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body p-0">
+                    {% for item in items %}
+                    <div class="row align-items-center border-bottom py-3 mx-2">
+                        <div class="col-3 col-md-2">
+                            {% if item.product.image %}
+                            <img src="{{ item.product.image.url }}" class="img-fluid rounded" alt="Product">
+                            {% else %}
+                            <img src="https://via.placeholder.com/100" class="img-fluid rounded" alt="Product">
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-9 col-md-5">
+                            <h5 class="mb-1">{{ item.product.name }}</h5>
+                            <small class="text-muted">{{ item.product.description|truncatewords:5 }}</small>
+                            <p class="mb-0 fw-bold text-success mt-1">₹ {{ item.product.price }}</p>
+                        </div>
+
+                        <div class="col-6 col-md-3 mt-3 mt-md-0 d-flex justify-content-center">
+                            <div class="input-group input-group-sm" style="width: 100px;">
+                                <a href="{% url 'remove_single_item' item.id %}" class="btn btn-outline-secondary">-</a>
+                                <span class="form-control text-center">{{ item.quantity }}</span>
+                                <a href="{% url 'add_to_cart' item.product.id %}" class="btn btn-outline-secondary">+</a>
+                            </div>
+                        </div>
+
+                        <div class="col-6 col-md-2 mt-3 mt-md-0 text-end">
+                            <a href="{% url 'remove_from_cart' item.id %}" class="text-danger" title="Delete Item">
+                                <i class="bi bi-trash"></i> Remove
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0 fw-bold">Order Summary</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Subtotal</span>
+                        <span>₹ {{ total }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Shipping</span>
+                        <span class="text-success">Free</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between mb-4">
+                        <span class="fw-bold">Total Amount</span>
+                        <span class="fw-bold fs-5">₹ {{ total }}</span>
+                    </div>
+                    
+                    <a href="{% url 'checkout' %}" class="btn btn-dark w-100 py-2">
+                        Proceed to Checkout
+                    </a>
+                </div>
+            </div>
+            
+            <div class="alert alert-info mt-3 small">
+                <i class="bi bi-shield-lock"></i> Safe and Secure Payments.
+            </div>
+        </div>
+    </div>
+
+    {% else %}
+    <div class="text-center py-5">
+        <h4 class="text-muted">Your cart is empty</h4>
+        <a href="{% url 'homepage' %}" class="btn btn-primary mt-3">Continue Shopping</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

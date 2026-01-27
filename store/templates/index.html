@@ -37,7 +37,8 @@
                                 <h5 class="card-text text-success">₹ {{ product.price }}</h5>
                                 
                                 <div class="d-grid gap-2 mt-3">
-                                    {% if product.inventory > 0 %}
+                                    <!-- if inventory is greater than 0, show add to cart button -->
+                                    {% if product.inventory > 0 %} 
                                         <a href="{% url 'add_to_cart' product.id %}" class="btn btn-primary">
                                             Add to Cart
                                         </a>

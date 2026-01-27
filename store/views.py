@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
+from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 from django.views import View
 from .forms import SignUpForm
@@ -52,7 +53,7 @@ def checkout(request):
             cart.delete() 
             
             messages.success(request, "Order Placed Successfully!")
-            return redirect('orders') # We will make this page next
+            return redirect('order_success') 
             # --- LOGICAL TRANSACTION END ---
             
     else:
@@ -109,7 +110,7 @@ def homepage(request):
         
     return render(request, 'index.html', {'products': products, 'categories': categories})
 # --- ADD TO CART VIEW ---
-@login_required(login_url='/login/') # Ye decorator ensure karega ki user login ho
+@login_required(login_url='/login/') # ensure that the user is logined in
 def add_to_cart(request, product_id):
     user = request.user
     product = Product.objects.get(id=product_id)
@@ -121,7 +122,7 @@ def add_to_cart(request, product_id):
     cart_item, item_created = CartItem.objects.get_or_create(cart=cart, product=product)
     
     if not item_created:
-        # Agar pehle se tha, toh quantity badha do
+        # if was already there, just increase quantity
         cart_item.quantity += 1
         cart_item.save()
     
@@ -154,3 +155,19 @@ def remove_from_cart(request, item_id):
     
     # 3. Go back to cart page
     return redirect('view_cart')
+@login_required(login_url='/login/')
+def remove_single_item(request, item_id):
+    try:
+        cart_item = CartItem.objects.get(id=item_id)
+        if cart_item.cart.user == request.user:
+            if cart_item.quantity > 1:
+                cart_item.quantity -= 1
+                cart_item.save()
+            else:
+                cart_item.delete()
+    except CartItem.DoesNotExist:
+        pass
+    return redirect('view_cart')
+
+def order_success(request):
+    return render(request, 'success.html')

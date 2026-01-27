@@ -17,8 +17,9 @@ class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, default=1)
     description = models.CharField(max_length=200, default='', null=True, blank=True)
     image = models.ImageField(upload_to='uploads/products/')
-    inventory = models.IntegerField(default=1) # Keeping your inventory logic
+    inventory = models.IntegerField(default=1) # Keeping your inventory logic (out of stock)
 
+    # check if product is in stock
     def is_in_stock(self):
         return self.inventory > 0
 
@@ -41,6 +42,7 @@ class Order(models.Model):
 # store/models.py ke end mein add karein
 
 class Cart(models.Model):
+    #one to one relation so that each user has only one cart in DB
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -49,7 +51,7 @@ class Cart(models.Model):
 
     @property
     def total_price(self):
-        # Cart ka total price calculate karne ke liye
+        # calculate total price of cart
         total = 0
         for item in self.items.all():
             total += item.total_price
