@@ -10,6 +10,12 @@ from django.contrib.auth.decorators import login_required
 from .forms import CheckoutForm
 
 @login_required(login_url='/login/')
+
+def orders(request):
+    # Show orders of current user (order_by -date)
+    orders = Order.objects.filter(user=request.user).order_by('-date')
+    return render(request, 'orders.html', {'orders': orders})
+
 def checkout(request):
     # 1. Get the user's cart
     try:

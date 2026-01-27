@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">My Orders</h2>
+
+    {% if orders %}
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Date</th>
+                        <th>Product</th>
+                        <th>Image</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td>{{ order.date }}</td>
+                        <td>{{ order.product.name }}</td>
+                        <td>
+                            {% if order.product.image %}
+                            <img src="{{ order.product.image.url }}" style="height: 50px; width: 50px; object-fit: cover;" class="rounded">
+                            {% endif %}
+                        </td>
+                        <td>₹ {{ order.price }}</td>
+                        <td>{{ order.quantity }}</td>
+                        <td>₹ {% widthratio order.price 1 order.quantity %}</td>
+                        <td>
+                            {% if order.status %}
+                                <span class="badge bg-success">Completed</span>
+                            {% else %}
+                                <span class="badge bg-warning text-dark">Pending</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% else %}
+        <div class="alert alert-info">You haven't placed any orders yet. <a href="{% url 'homepage' %}">Shop Now</a></div>
+    {% endif %}
+</div>
+{% endblock %}

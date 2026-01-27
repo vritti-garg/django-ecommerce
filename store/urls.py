@@ -14,5 +14,6 @@ urlpatterns = [
     path('remove-item/<int:item_id>/', views.remove_from_cart, name='remove_from_cart'),
     #order logic
     path('checkout/', views.checkout, name='checkout'),
+    path('orders/', views.orders, name='orders'),
     path('order-success/', views.order_success, name='order_success'),
 ]
