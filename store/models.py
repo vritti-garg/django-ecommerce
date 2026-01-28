@@ -27,7 +27,7 @@ class Product(models.Model):
         return self.name
 
 class Order(models.Model):
-    # CHANGED: Now linking to the official User model
+    # linking to the official User model
     user = models.ForeignKey(User, on_delete=models.CASCADE) 
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
@@ -39,7 +39,6 @@ class Order(models.Model):
 
     def placeOrder(self):
         self.save()
-# store/models.py ke end mein add karein
 
 class Cart(models.Model):
     #one to one relation so that each user has only one cart in DB

@@ -1,6 +1,5 @@
 from django.contrib import admin
 from .models import Product, Category, Order, Cart, CartItem
-# Note: 'Customer' ko import list se hata diya hai
 
 class AdminProduct(admin.ModelAdmin):
     list_display = ['name', 'price', 'category', 'inventory']
@@ -18,6 +17,6 @@ class CartItemInline(admin.TabularInline):
 
 class CartAdmin(admin.ModelAdmin):
     list_display = ['user', 'created_at']
-    inlines = [CartItemInline] # Isse Cart ke andar hi Items dikhenge
+    inlines = [CartItemInline] # shows items only in the cart detail view
 
 admin.site.register(Cart, CartAdmin)

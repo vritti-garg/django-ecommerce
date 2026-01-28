@@ -5,9 +5,9 @@ def cart_count(request):
     count = 0
     if request.user.is_authenticated:
         try:
-            # User ki cart dhundo
+            # search user's cart
             cart = Cart.objects.get(user=request.user)
-            # Saare items ki quantity total karo
+            # total quantity of all items in the cart
             cart_items = cart.items.all()
             for item in cart_items:
                 count += item.quantity
