@@ -12,6 +12,20 @@
         /* Optional: Makes the navbar links look a bit better */
         .navbar-nav .nav-link { padding-right: 1rem; padding-left: 1rem; }
     </style>
+
+    <style>
+        /* Whole Card Animation */
+        .product-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px); /* Card moves UP slightly */
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15) !important; /* Soft Shadow appears */
+        }
+    </style>
+
   </head>
   <body>
 
@@ -25,10 +39,18 @@
         
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto">
+
+            <form class="d-flex ms-auto me-3" method="GET" action="{% url 'homepage' %}">
+                <!--- note: name="q" is imp, as it will be analysed in backend --->
+                <input class="form-control me-2" type="search" name="q" placeholder="Search products..." aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
             
             <li class="nav-item">
               <a class="nav-link active" href="{% url 'homepage' %}">Store</a>
             </li>
+
+
 
             {% if user.is_authenticated %}
                 <li class="nav-item">

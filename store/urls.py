@@ -16,4 +16,7 @@ urlpatterns = [
     path('checkout/', views.checkout, name='checkout'),
     path('orders/', views.orders, name='orders'),
     path('order-success/', views.order_success, name='order_success'),
+    # Product Detail Page 
+    # <int:pk> means "Primary Key" or ID. So it will look for product ID 1, 2, 50, etc
+    path('product/<int:pk>/', views.product_detail, name='product_detail'),
 ]

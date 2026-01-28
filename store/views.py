@@ -6,8 +6,8 @@ from django.views import View
 from .forms import SignUpForm
 from .models import Product, Category, Order, Cart, CartItem
 from django.contrib.auth.decorators import login_required
-# store/views.py
 from .forms import CheckoutForm
+from django.shortcuts import render, redirect, get_object_or_404
 
 @login_required(login_url='/login/')
 
@@ -107,14 +107,28 @@ def logout_view(request):
 # --- 4. HOMEPAGE (Catalog) ---
 def homepage(request):
     products = Product.objects.all()
-    categories = Category.objects.all()
     
     # Filter by category
     category_id = request.GET.get('category')
     if category_id:
         products = products.filter(category_id=category_id)
+
+    # 2. Filter by Search Query 
+    query = request.GET.get('q')
+    if query:
+        # 'name__icontains' means search inside the name (case-insensitive)
+        products = products.filter(name__icontains=query)
+
+    categories = Category.objects.all()
+    
+    # pass 'query' so that search box can keeps the value
+    context = {
+        'products': products, 
+        'categories': categories,
+        'query': query 
+    }
         
-    return render(request, 'index.html', {'products': products, 'categories': categories})
+    return render(request, 'index.html', context)
 # --- ADD TO CART VIEW ---
 @login_required(login_url='/login/') # ensure that the user is logined in
 def add_to_cart(request, product_id):
@@ -177,3 +191,15 @@ def remove_single_item(request, item_id):
 
 def order_success(request):
     return render(request, 'success.html')
+
+def product_detail(request, pk):
+    # This tries to get the product, or shows a 404 error page if not found
+    product = get_object_or_404(Product, pk=pk)
+    # Logic: Same category, but exclude the current product, limit to 4 items
+    related_products = Product.objects.filter(category=product.category).exclude(id=pk)[:4]
+    
+    context = {
+        'product': product,
+        'related_products': related_products,
+    }
+    return render(request, 'product_detail.html', context)

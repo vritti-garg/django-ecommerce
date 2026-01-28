@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'homepage' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="/?category={{ product.category.id }}">{{ product.category.name }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+        </ol>
+    </nav>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <div class="row">
+                
+                <div class="col-md-5 text-center">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" class="img-fluid rounded" alt="{{ product.name }}" style="max-height: 400px;">
+                    {% else %}
+                        <img src="https://via.placeholder.com/400" class="img-fluid rounded" alt="No Image">
+                    {% endif %}
+                </div>
+
+                <div class="col-md-7">
+                    <h1 class="fw-bold">{{ product.name }}</h1>
+                    <p class="text-muted">Category: <span class="badge bg-secondary">{{ product.category.name }}</span></p>
+                    
+                    <h2 class="text-success fw-bold mt-3">₹ {{ product.price }}</h2>
+                    
+                    <p class="mt-4">{{ product.description }}</p>
+
+                    <hr>
+
+                    <div class="mt-4">
+                        {% if product.inventory > 0 %}
+                            <p class="text-success"><i class="bi bi-check-circle-fill"></i> In Stock ({{ product.inventory }} available)</p>
+                            
+                            <a href="{% url 'add_to_cart' product.id %}" class="btn btn-primary btn-lg px-4">
+                                Add to Cart
+                            </a>
+                        {% else %}
+                            <p class="text-danger"><i class="bi bi-x-circle-fill"></i> Out of Stock</p>
+                            <button class="btn btn-secondary btn-lg" disabled>Sold Out</button>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    
+    <div class="mt-4">
+        <a href="{% url 'homepage' %}" class="btn btn-outline-dark">Back to Store</a>
+    </div>
+
+</div>
+{% if related_products %}
+    <div class="mt-5">
+        <h3 class="fw-bold mb-4">Related Products</h3>
+        <div class="row row-cols-1 row-cols-md-4 g-4">
+            {% for item in related_products %}
+            <div class="col">
+                <div class="card h-100 shadow-sm border-0 product-card">
+                    <a href="{% url 'product_detail' item.id %}">
+                        {% if item.image %}
+                        <img src="{{ item.image.url }}" class="card-img-top" alt="{{ item.name }}" style="height: 150px; object-fit: cover;">
+                        {% else %}
+                        <img src="https://via.placeholder.com/150" class="card-img-top" alt="No Image">
+                        {% endif %}
+                    </a>
+                    <div class="card-body p-2 text-center">
+                        <h6 class="card-title fw-bold text-truncate">{{ item.name }}</h6>
+                        <p class="text-success mb-0">₹ {{ item.price }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+{% endblock %}
