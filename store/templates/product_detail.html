@@ -35,7 +35,7 @@
 
                     <div class="mt-4">
                         {% if product.inventory > 0 %}
-                            <p class="text-success"><i class="bi bi-check-circle-fill"></i> In Stock ({{ product.inventory }} available)</p>
+                            <p class="text-success fw-bold"><i class="bi bi-check-circle-fill"></i> In Stock</p>
                             
                             <a href="{% url 'add_to_cart' product.id %}" class="btn btn-primary btn-lg px-4">
                                 Add to Cart
@@ -44,7 +44,7 @@
                             <p class="text-danger"><i class="bi bi-x-circle-fill"></i> Out of Stock</p>
                             <button class="btn btn-secondary btn-lg" disabled>Sold Out</button>
                         {% endif %}
-                    </div>
+                    </div> 
                 </div>
 
             </div>

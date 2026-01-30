@@ -8,6 +8,7 @@ from .models import Product, Category, Order, Cart, CartItem
 from django.contrib.auth.decorators import login_required
 from .forms import CheckoutForm
 from django.shortcuts import render, redirect, get_object_or_404
+from django.core.paginator import Paginator
 
 @login_required(login_url='/login/')
 
@@ -119,11 +120,19 @@ def homepage(request):
         # 'name__icontains' means search inside the name (case-insensitive)
         products = products.filter(name__icontains=query)
 
+    # --- PAGINATION LOGIC STARTS HERE ---
+    # Show 12 products per page
+    paginator = Paginator(products, 12) 
+    page_number = request.GET.get('page')
+    products_page = paginator.get_page(page_number)
+    # ------------------------------------  
+
+
     categories = Category.objects.all()
     
     # pass 'query' so that search box can keeps the value
     context = {
-        'products': products, 
+        'products': products_page, 
         'categories': categories,
         'query': query 
     }
@@ -147,6 +156,7 @@ def add_to_cart(request, product_id):
         cart_item.save()
     
     return redirect('homepage')
+
 
 # --- VIEW CART PAGE ---
 @login_required(login_url='/login/')
