@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Product, Category, Order, Cart, CartItem
+from .models import Product, Category, Order, Cart, CartItem, Profile
 
 class AdminProduct(admin.ModelAdmin):
     list_display = ['name', 'price', 'category', 'inventory']
@@ -10,6 +10,7 @@ class AdminCategory(admin.ModelAdmin):
 admin.site.register(Product, AdminProduct)
 admin.site.register(Category, AdminCategory)
 admin.site.register(Order)
+admin.site.register(Profile)
 
 class CartItemInline(admin.TabularInline):
     model = CartItem
