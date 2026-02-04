@@ -17,21 +17,34 @@
                 
                 <div class="col-md-5 text-center">
                     {% if product.image %}
-                        <img src="{{ product.image.url }}" class="img-fluid rounded" alt="{{ product.name }}" style="max-height: 400px;">
+                        <div class="col-md-6 mb-4">
+                            <div class="zoom-container" id="zoom-box" style="overflow: hidden; border-radius: 10px; cursor: crosshair;">
+        
+                                <img src="{{ product.image.url }}" 
+                                    alt="{{ product.name }}" 
+                                    class="img-fluid w-100" 
+                                    id="product-image"
+                                    style="transition: transform 0.1s ease; transform-origin: center center;">
+             
+                            </div>
+                        </div>
+                        
                     {% else %}
                         <img src="https://via.placeholder.com/400" class="img-fluid rounded" alt="No Image">
                     {% endif %}
                 </div>
 
+
                 <div class="col-md-7">
-                    <h1 class="fw-bold">{{ product.name }}</h1>
+                    <h1 class="fw-bold">{{ product.name }}
+                    <span class="text-muted fs-6" style="font-weight: normal;"> (Added on: {{ product.created_at|date:"d M, Y" }}) </span> </h1>
                     <p class="text-muted">Category: <span class="badge bg-secondary">{{ product.category.name }}</span></p>
                     
                     <h2 class="text-success fw-bold mt-3">₹ {{ product.price }}</h2>
                     
                     <p class="mt-4">{{ product.description }}</p>
 
-                    <hr>
+                    <hr> 
 
                     <div class="mt-4">
                         {% if product.inventory > 0 %}
@@ -80,5 +93,37 @@
         </div>
     </div>
     {% endif %}
+    <script>
+        const zoomBox = document.getElementById('zoom-box');
+        const zoomImg = document.getElementById('product-image');
 
+        // 1. when mouse moves inside the zoom box
+        zoomBox.addEventListener('mousemove', function(e) {
+            
+            // ask box size and position from browser
+            const box = zoomBox.getBoundingClientRect();
+            
+            // coordinates of mouse (X and Y) relative to the box
+            const x = e.clientX - box.left; 
+            const y = e.clientY - box.top;  
+            
+            // convert into %
+            // if mouse is at right edge, xPercent = 100%; in centre xPercent = 50%
+            const xPercent = (x / box.width) * 100;
+            const yPercent = (y / box.height) * 100;
+
+            // CSS Magic: set image focus at mouse position
+            zoomImg.style.transformOrigin = `${xPercent}% ${yPercent}%`;
+            
+            // Image is zoomed 2.5x
+            zoomImg.style.transform = "scale(2.5)"; 
+        });
+
+        // 2. when mouse leaves the zoom box
+        zoomBox.addEventListener('mouseleave', function() {
+            //Reset
+            zoomImg.style.transformOrigin = "center center";
+            zoomImg.style.transform = "scale(1)"; 
+        });
+    </script>
 {% endblock %}

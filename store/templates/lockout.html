@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5">
+        
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-5 text-center">
+                
+                <div class="mb-4">
+                    <i class="bi bi-shield-lock-fill text-danger" style="font-size: 4rem;"></i>
+                </div>
+
+                <h2 class="text-danger fw-bold mb-3">Account Locked</h2>
+
+                <div class="alert alert-danger">
+                    <strong>Too many failed login attempts.</strong>
+                    <p class="mb-0 mt-2">
+                        For security reasons, your account has been temporarily locked. 
+                        Please wait for <strong>1 Minute</strong> and try again.
+                    </p>
+                </div>
+
+                <div class="mt-4">
+                    <a href="{% url 'login' %}" class="btn btn-outline-dark px-4">
+                        <i class="bi bi-arrow-clockwise"></i> Refresh Page
+                    </a>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

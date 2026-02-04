@@ -2,7 +2,8 @@ from django.contrib import admin
 from .models import Product, Category, Order, Cart, CartItem, Profile
 
 class AdminProduct(admin.ModelAdmin):
-    list_display = ['name', 'price', 'category', 'inventory']
+    list_display = ['name', 'price', 'category', 'inventory', 'created_at']
+
 
 class AdminCategory(admin.ModelAdmin):
     list_display = ['name']

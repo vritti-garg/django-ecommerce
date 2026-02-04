@@ -1,8 +1,17 @@
-# .gitignore
+# Django defaults
 db.sqlite3
 __pycache__
 *.pyc
+
+# Virtual Environments
 env/
 venv/
+
+# OS System files
 .DS_Store
+
+# User Uploads (Images etc)
 media/
+
+# --- SECURITY ---
+.env

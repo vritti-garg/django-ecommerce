@@ -9,9 +9,14 @@ https://docs.djangoproject.com/en/6.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
-
+import os
 from pathlib import Path
 from django.contrib.messages import constants as messages
+from dotenv import load_dotenv # type: ignore
+from datetime import timedelta
+
+# Load variables from .env file
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,10 +26,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-nbiy^a+7()+tp@i_s4s564)+z9!ru@$^v*j@a#1sfc5n1=sn3('
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# if in .env DEBUG=True, then True, orelse False
+DEBUG = os.getenv('DEBUG') == 'True'
 
 ALLOWED_HOSTS = []
 
@@ -38,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'axes',
     'store',
     'rest_framework'
 ]
@@ -48,6 +55,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'axes.middleware.AxesMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -127,3 +135,17 @@ MESSAGE_TAGS = {
     messages.ERROR: 'error', 
     messages.SUCCESS: 'success', # Maps 'success' to 'alert-success' (Green)
 }
+
+AUTHENTICATION_BACKENDS = [
+    # to check bruteforce (login attempts and block if necessary)
+    'axes.backends.AxesStandaloneBackend',
+
+    # Django Default Backend (for login)
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+# Axes Configuration (Rules)
+AXES_FAILURE_LIMIT = 3          # block after 3 incorrect attempts
+AXES_COOLOFF_TIME = timedelta(minutes=1)  # block for 1 minute
+AXES_LOCKOUT_TEMPLATE = 'lockout.html'  # Custom lockout template
+AXES_RESET_ON_SUCCESS = True    # Reset counter on successful login
